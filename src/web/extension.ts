@@ -6,6 +6,7 @@
 
 import * as vscode from 'vscode';
 import { DurationDecorator } from './DurationDecorator';
+import { DurationLocation as DurationLocation, editDuration } from './DurationEditor';
 
 // This method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -16,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const decorator = new DurationDecorator(vscode.window.activeTextEditor);
 
 	vscode.window.onDidChangeActiveTextEditor(editor => {
-		if (editor && decorator.isSupported(editor?.document)) { 
+		if (editor && decorator.isSupported(editor?.document)) {
 			decorator.setActiveEditor(editor);
 		}
 	}, null, context.subscriptions);
@@ -29,9 +30,13 @@ export function activate(context: vscode.ExtensionContext) {
 
 	decorator.triggerUpdateDecorations();
 
-	const disposable = vscode.commands.registerCommand(DurationDecorator.EDIT_COMMAND, (arg) => {
-		vscode.window.showInformationMessage('Sorry, editing is not implemented yet');
-		console.log(arg);
+	const disposable = vscode.commands.registerCommand(DurationDecorator.EDIT_COMMAND, (durationLocation: DurationLocation) => {
+		const activeEditor = vscode.window.activeTextEditor;
+		if (activeEditor && decodeURIComponent(activeEditor?.document.uri.toString()) === durationLocation.documentUri) {
+			editDuration(activeEditor, durationLocation);
+		} else {
+			vscode.window.showErrorMessage("Unexpected active document editor.");
+		}
 	});
 
 	context.subscriptions.push(disposable);

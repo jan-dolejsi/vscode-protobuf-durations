@@ -1,7 +1,7 @@
 {
 	"name": "protobuf-durations",
 	"description": "Decorates protobuf duration values in a more readable days-hours-minutes-seconds format in json files",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"author": "Jan Dolejsi",
 	"publisher": "jan-dolejsi",
 	"license": "MIT",

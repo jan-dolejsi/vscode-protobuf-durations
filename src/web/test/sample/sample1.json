@@ -1,0 +1,7 @@
+{
+	"delay": "72060s",
+
+	"someObject": {
+		"oneHour": "3600s"
+	}
+}

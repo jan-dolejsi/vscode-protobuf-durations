@@ -6,7 +6,7 @@
 
 import * as vscode from 'vscode';
 import { DurationDecorator } from './DurationDecorator';
-import { DurationLocation as DurationLocation, editDuration } from './DurationEditor';
+import { DurationLocation, editDuration } from './DurationEditor';
 
 // This method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -24,6 +24,12 @@ export function activate(context: vscode.ExtensionContext) {
 
 	vscode.workspace.onDidChangeTextDocument(event => {
 		if (decorator.isActiveEditorDocument(event.document)) {
+			decorator.triggerUpdateDecorations(true);
+		}
+	}, null, context.subscriptions);
+
+	vscode.window.onDidChangeTextEditorVisibleRanges(event => {
+		if (decorator.isActiveEditor(event.textEditor)) {
 			decorator.triggerUpdateDecorations(true);
 		}
 	}, null, context.subscriptions);

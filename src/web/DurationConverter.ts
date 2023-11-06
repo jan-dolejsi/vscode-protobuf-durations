@@ -13,6 +13,10 @@ export class DurationConverter {
     this.add("hour", Math.floor(seconds % (3600 * 24) / 3600));
     this.add("minute", Math.floor(seconds % 3600 / 60));
     this.add("second", Math.floor(seconds % 60));
+
+    if (seconds / (3600 * 24) > 500) {
+      this.addApproximate("year", seconds / (3600 * 24 * 365.25));
+    }
   }
 
   add(unit: string, amount: number): void {
@@ -21,6 +25,10 @@ export class DurationConverter {
     } else if (amount > 0) {
       this.elements.push(new DurationElement(unit + 's', amount));
     }
+  }
+
+  addApproximate(unit: string, amount: number): void {
+    this.elements.push(new ApproxDurationElement(unit, amount));
   }
 
   public toFriendlyString(): string {
@@ -73,7 +81,7 @@ export class DurationConverter {
 
 class DurationElement {
 
-  constructor(private readonly unit: string, private readonly amount: number) {
+  constructor(protected readonly unit: string, protected readonly amount: number) {
   }
 
   public toFriendlyString(): string {
@@ -82,5 +90,17 @@ class DurationElement {
 
   public toEditableString(): string {
     return `${this.amount}${this.unit.substring(0, 1)}`;
+  }
+}
+
+class ApproxDurationElement extends DurationElement {
+
+  public toFriendlyString(): string {
+    const rounded = Math.round(this.amount * 10) / 10;
+    return `~${rounded} ${this.unit}s`;
+  }
+
+  public toEditableString(): string {
+    return ''; // does not participate in editing
   }
 }
